@@ -1,0 +1,45 @@
+<html>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="square.js"></script>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+//different value for each and every vertex so has to be attribute
+attribute vec4 vPosition;
+//need to parse for each model matrix
+uniform mat4 modelViewMatrix;
+
+
+void
+main()
+{
+	//model has to come first because of matrix multiplication
+    gl_Position = modelViewMatrix * vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+void
+main()
+{
+    gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );	
+}
+</script>
+
+<body>
+<div>
+<canvas id="gl-canvas" width="512" height="512">
+<!-- <canvas id="gl-canvas" width="1200" height="600"> -->
+</canvas>
+<!-- <button id="bt_move">Move the Cube!</button> -->
+</div>
+
+
+</body>
+</html>

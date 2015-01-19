@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+precision mediump float;
+attribute vec4 vPosition;
+attribute vec4 vNormal;
+
+varying vec3 L, E, H, N;
+varying vec4 gouraud_color;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 lightMatrix;
+uniform mat4 projection;
+
+uniform vec4 ambientProduct, diffuseProduct, specularProduct;
+uniform vec4 lightPosition;
+uniform float shininess;
+uniform float ShadeType;
+
+void main(){
+	vec3 pos = (modelViewMatrix * vPosition).xyz;
+	vec3 lightPos = (lightMatrix * lightPosition).xyz;
+
+	L = normalize(lightPos - pos);
+	E = normalize(-pos);
+	H = normalize(L + E);
+	N = normalize(modelViewMatrix * vNormal).xyz;
+	
+   	vec4 ambient = ambientProduct;
+  	float kd = max(dot(L, N), 0.0);
+   	vec4 diffuse = kd * diffuseProduct;
+
+  	float ks = pow(max(dot(N, H), 0.0), shininess);
+	vec4 specular = ks * specularProduct;
+
+	if( dot(L, N) < 0.0 ) {
+		specular = vec4(0.0, 0.0, 0.0, 1.0);
+   	}
+
+	gouraud_color = ambient + diffuse + specular;
+
+	gl_Position = projection * modelViewMatrix * vPosition;
+}
+
+</script>
+
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+uniform vec4 ambientProduct;
+uniform vec4 diffuseProduct;
+uniform vec4 specularProduct;
+uniform float shininess;
+varying vec3 N, L, E, H;
+varying vec4 gouraud_color;
+uniform float ShadeType;
+
+void main(){
+
+   	vec4 ambient = ambientProduct;
+  	float kd = max(dot(L, N), 0.0);
+   	vec4 diffuse = kd * diffuseProduct;
+
+  	float ks = pow(max(dot(N, H), 0.0), shininess);
+	vec4 specular = ks * specularProduct;
+
+	if( dot(L, N) < 0.0 ) {
+		specular = vec4(0.0, 0.0, 0.0, 1.0);
+   	}
+
+	//Use gouraud shading computed in vertex shader
+   	if(ShadeType > 1.5 && ShadeType < 2.5){
+   		gl_FragColor = gouraud_color;
+   	}
+   	//Otherwise use the phong shading calculated here
+   	else{
+   		gl_FragColor = ambient + diffuse + specular;
+   	}
+
+	gl_FragColor.a = 1.0;
+}
+
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="planets.js"></script>
+
+</head>
+<body>
+
+<div class = "canvas">
+<canvas id="gl-canvas" width="512" height="512"></canvas>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+Name: Robert Winders
+UID: 004144698
+Email: rwinders@ucla.edu
+
+I'll address each of the points in the spec briefly.
+
+1. Getting a WebGL canvas to display is trivial now.
+
+2. I used the code in the book to generate the spheres (tetrahedron method).
+   The parameter used to control the number of vertices is
+   numTimesToSubdivide.
+
+3. In the tetrahedron recursion, I also generate normals for the spheres.
+   Based on the type of shading for the planet, I generate either flat or
+   smooth normals.
+
+4. This is done by drawing multiple spheres and then applying the correct
+   transformation matrices to make it appear as a solar system. Each of my
+   planets orbit the sun at a different rate. I use a perspective projection.
+
+5. To implement the sun as a point light source I specify the lightPosition
+   as the center of the sun. For each of the planets, I specify a
+   numTimesToSubdivide, calculate the correct normals, and specify all of the
+   variables involved in calculating the shading for the planet, such as
+   the ambientProduct and diffuseProduct. All the differences in the planets
+   can be achieved by changing one or more of the above conditions.
+
+6. Moved over the code from project 2 with some adjustments. My pitch is a
+   little off I think, but since this portion of the assignment is only 10
+   points I decided to shift my focus towards the shading aspect. Because
+   the pitch is strange, my initial view isn't at a 30 degree angle.
+
+7. I implemented the Gouraud shading in the vertex shader since it's a 
+   per vertex shading method. I implemented Phong shading in the fragment
+   shader because it's a per fragment shading method. I pass in a variable
+   to my shaders called shadeType to specify which shading method to use
+   based on the planet.
+
+EXTRA CREDIT
+
+1. I added a moon orbiting the last planet in my solar system. It's a goldish
+   color and fairly small compared to the other objects in the solar system.
+   To implement the moon, I just created a long series of transformations an
+   instanced another sphere.
+
+2. Didn't do.

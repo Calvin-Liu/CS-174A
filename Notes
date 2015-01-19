@@ -1,0 +1,155 @@
+You can send infomation through pipeline in immediate / retained mode
+
+main()
+{
+	initialize_the_system();
+	p = find_initial_point();
+	for( some_number_of_points )
+	{
+		q = generate_a_point(p);
+		store_the_point(q);
+		p=q;
+	}
+	send_all_points_to_GPU();
+	cleanup();
+	display_all_points_on_GPU();
+}
+
+with retained mode youre transferring everything at one time. 
+"Render this whole array of points"
+
+Slide 11, things you should consider before designing
+Slide 12, OpenGL API functions
+Slide 26 n is like the number of dimensions
+
+Problem with floats are that its not percise after 6 significant digits.
+
+Discussion: Xiaolong Jiang 
+Klose
+Office Hour M 8am-10am
+F 2pm-6pm but not real OH just here
+
+gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW)
+Sends the data to a buffer on the GPU. It only accepts arrays of native data type values (an array of floating-point values in memory) and not Javascript objects.
+
+flatten(points) converts the Javascript objects (vec2) into the data format accepted by the gl.bufferData
+
+Although we can create points and put them in an array, we have to send them to the GPU and render them. We create a buffer with
+var buffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+gl.ARRAY_BUFFER indicates that the data in the buffer will be vertex attribute data rather than indices to the data.
+Binding makes this buffer the current buffer. Subsequent functions that put data in a buffer will use this buffer until we bind to a new one. 
+
+Allocated buffer to GPU but did not put data into it. 
+gl.bufferData does that. 
+
+STATIC_DRAW makes it just display once
+
+
+Model will be done in CPU and then rendered and send to the GPU
+In immediate rendering, the CPU cant send a complex model to the GPU to render
+In retained, the GPU model is saved and you only change the different GPU pixels
+GPU is heavily used on the GPU
+Shader does the modification on the GPU
+Vertex shader connect the dots, fragment shader for texture, color and lighting. 
+
+attribute: vertex
+uniform: vertex, fragment
+varing: vertex, fragment
+
+attribute vcolor <-- application
+varying fcolor <-- 
+
+
+10/14/14
+Deadline pushed to 10/17
+Representing geometric objects
+
+3 spaces:
+Vector Space
+Affine space
+Euclidian space
+
+Linearly independent. Largest number of linearly independent vectors that we can find in a space gives the dimension.
+Vector space of dimension n, then any set of n linearly independent vectors forms a basis. A room is defined by a linear combination of vectors xyz
+
+Matrices are good for changing representation. Changing frames
+
+Point subtraction gives a vector
+
+Any point in the frame can be defined by a combination of the basis(vector)
+
+Euclidian space consists of only vectors and scalars
+The dot product is super important. If the value is 0 then u and v are orthogonal to each other
+u dot u is u^2 which is very useful
+
+The dot product is actually uvcosθ
+You can calculate the distance between points
+
+Can find a normal that is orthogonal to the plane
+
+Transformations like scale, rotation,
+Translation in the transformation aspect cannot do
+But there is a fix:
+[x]	[x]
+[y]	[y]
+	[1]
+
+OpenGL Frames
+1)Object coordinates
+2)World coordinates
+3)Eye coordinates
+4)Clip coordinates
+5)Normalized device coordinates
+6)Window coordinates
+
+Use 4x4 matrice in order to create a viewspace
+
+We see things based on manupulating the model-view
+
+OpenGL represents matrices as column vectors. 
+
+Rotation can only be done around 1 axis
+
+uniform: it will be the same for all frames
+
+"Basically multiple every vertex by that transformation to define the output variable"
+
+10/16/14
+Trackball rotation model
+x^2+y^2+z^2 = 1 and solve for missing value
+
+Incrementing small increments use θ = sinθ
+Transformations go in reverse order
+
+Perspective viewing - you can see the ray light seperation
+Parallel viewing - the light rays seem parallel since the light source is so far away
+
+Useful for Assignment #2:
+	Take a single geometric object. Clone it with only transformations
+	-Define geometry of a cube. Instance the cube by setting a transformation and setting some state and drawing it
+
+Camera looks down the negative z axis meaning thumb right, index up, middle out. 
+
+Look-at is the eye which normally looks down the z axis. The projection screen is orthogonal
+
+Limited box view. If you want to change it then you need to scale. OpenGL has a funcion glOrtho(left,right,bottom,top,near,far) to zoom in and out
+
+Perspective, the front gets bigger and the back gets smaller
+d is the distance from the eye point
+
+Perspective(fovy, aspect, near, far)
+field of view in the y is fovy
+aspect is the relationship betweent he width and the height. width/height
+
+
+10/21/14
+The uncanny value, the closer we get to making animations look more human, the creepy and more off it is.
+
+Umbra is is initial shadow while the penumbra is the shadow that is not as dark and is under the initial shadow or light ray
+
+
+
+
+
